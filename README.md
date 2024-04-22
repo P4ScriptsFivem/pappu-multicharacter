@@ -9,7 +9,7 @@ Multi Character Feature for QBCore Multicharacter And inspired by NoPixel 4.0.
 
 ## Features
 If You Use [qb-houses](https://github.com/qbcore-framework/qb-houses)
-Go To 324Line in Server/main.lua [here](https://github.com/qbcore-framework/qb-houses/blob/main/server/main.lua)
+Go To Line 324 in Server/main.lua [here](https://github.com/qbcore-framework/qb-houses/blob/main/server/main.lua)
 
 Remove This 
 ```
