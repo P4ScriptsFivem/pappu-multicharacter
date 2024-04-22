@@ -7,6 +7,35 @@ Multi Character Feature for QBCore Multicharacter And inspired by NoPixel 4.0.
 - Ability To See Character Information During Selection.
 - Ability To Customise Your Character Slot At [config.lua](https://github.com/P4ScriptsFivem/pappu-multicharacter/blob/main/config.lua).
 
+## Features
+If You Use [qb-houses](https://github.com/qbcore-framework/qb-houses)
+Go To 324Line in Server/main.lua [here](https://github.com/qbcore-framework/qb-houses/blob/main/server/main.lua)
+
+Remove This 
+```
+RegisterNetEvent('qb-houses:server:LogoutLocation', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local MyItems = Player.PlayerData.items
+    MySQL.update('UPDATE players SET inventory = ? WHERE citizenid = ?',
+        { json.encode(MyItems), Player.PlayerData.citizenid })
+    QBCore.Player.Logout(src)
+    TriggerClientEvent('qb-multicharacter:client:chooseChar', src)
+end)
+```
+Add This  
+```
+RegisterNetEvent('qb-houses:server:LogoutLocation', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local MyItems = Player.PlayerData.items
+    MySQL.update('UPDATE players SET inventory = ? WHERE citizenid = ?',
+        { json.encode(MyItems), Player.PlayerData.citizenid })
+    QBCore.Player.Logout(src)
+    TriggerClientEvent('pappu-multicharacter:client:chooseChar', src)
+end)
+```
+
 ## Screenshots
 ![Group 847](https://github.com/P4ScriptsFivem/pappu-multicharacter/assets/120780563/9d7d768b-799f-4dfe-9567-62077479db63)
 
