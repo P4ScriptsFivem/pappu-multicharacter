@@ -7,6 +7,10 @@ Multi Character Feature for QBCore Multicharacter And inspired by NoPixel 4.0.
 - Ability To See Character Information During Selection.
 - Ability To Customise Your Character Slot At [config.lua](https://github.com/P4ScriptsFivem/pappu-multicharacter/blob/main/config.lua).
 
+## Screenshots
+![Group 847](https://github.com/P4ScriptsFivem/pappu-multicharacter/assets/120780563/9d7d768b-799f-4dfe-9567-62077479db63)
+
+
 ## Installation
 ### Manual
 - Download the script and put it in the `[qb]` directory.
@@ -29,6 +33,3 @@ ensure qb-weathersync
 
 ## License
 [MIT License](LICENSE)
-
-## Screenshots
-![Group 847](https://github.com/P4ScriptsFivem/pappu-multicharacter/assets/120780563/9d7d768b-799f-4dfe-9567-62077479db63)
