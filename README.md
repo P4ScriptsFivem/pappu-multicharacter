@@ -28,6 +28,7 @@ Add This
 ### Manual
 - Download the script and put it in the `[qb]` directory.
 - Add the following code to your server.cfg/resouces.cfg
+
 ```
 ensure qb-core
 ensure pappu-multicharacter
@@ -36,6 +37,7 @@ ensure qb-apartments
 ensure qb-clothing
 ensure qb-weathersync
 ```
+
 ## Dependencies
 - [qb-core](https://github.com/qbcore-framework/qb-core)
 - [qb-spawn](https://github.com/qbcore-framework/qb-spawn) - Spawn selector
