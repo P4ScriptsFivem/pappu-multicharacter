@@ -45,6 +45,8 @@ ensure qb-weathersync
 - [qb-clothing](https://github.com/qbcore-framework/qb-clothing) - For the character creation and saving outfits.
 - [qb-weathersync](https://github.com/qbcore-framework/qb-weathersync) - For adjusting the weather while player is creating a character.
 
-
+## Credits & Original Repository
+- [qb-multicharacter](https://github.com/qbcore-framework/qb-multicharacter)
+  
 ## License
 [GPL-3.0 license](LICENSE)
