@@ -379,7 +379,7 @@ function setCharactersList(max) {
     htmlResult += '<div class="characters">'
     if(max >= NChar) max = NChar-1
     for (let i = 1; i <= max+1; i++) {
-        htmlResult += '<div class="character" id="char-'+ i +'" data-cid=""><div class="character-div"><div class="user2"><img  src="https://cdn.discordapp.com/attachments/1231930300628471878/1231938611759546428/multi.gif?ex=6638c73d&is=6626523d&hm=5ca0b23a3e41131d1d2a95352e57df746d014d4f36906a56d9032b2e13c8cc55&" alt="plus" /></div><span id="slot-name">'+translations["create_new_character"]+'<span id="cid"></span></span><div class="user2"><img  src="https://cdn.discordapp.com/attachments/1231930300628471878/1231938611759546428/multi.gif?ex=6638c73d&is=6626523d&hm=5ca0b23a3e41131d1d2a95352e57df746d014d4f36906a56d9032b2e13c8cc55&" alt="plus" /></div></div><div class="btns" style=""> <div class="character-btn" id="select" style="display: block;"><p id="select-text"><i "="">'+translations["select"]+'</i></p></div> </div> </div>'
+        htmlResult += '<div class="character" id="char-'+ i +'" data-cid=""><div class="character-div"><div class="user2"><img  src="https://i.imgur.com/5zKSl8E.gif" alt="plus" /></div><span id="slot-name">'+translations["create_new_character"]+'<span id="cid"></span></span><div class="user2"><img  src="https://i.imgur.com/5zKSl8E.gif" alt="plus" /></div></div><div class="btns" style=""> <div class="character-btn" id="select" style="display: block;"><p id="select-text"><i "="">'+translations["select"]+'</i></p></div> </div> </div>'
     }
     htmlResult += '</div>'
     $('.characters-list').html(htmlResult)
@@ -388,7 +388,7 @@ function setCharactersList(max) {
 function refreshCharacters() {
     var htmlResult = ''
     for (let i = 1; i <= NChar; i++) {
-        htmlResult += '<div class="character" id="char-'+ i +'" data-cid=""><div class="character-div"><div class="user2"><img  src="https://cdn.discordapp.com/attachments/1231930300628471878/1231938611759546428/multi.gif?ex=6638c73d&is=6626523d&hm=5ca0b23a3e41131d1d2a95352e57df746d014d4f36906a56d9032b2e13c8cc55&" alt="plus" /></div><span id="slot-name">'+translations["create_new_character"]+'<span id="cid"></span></span><div class="user2"><img  src="https://cdn.discordapp.com/attachments/1231930300628471878/1231938611759546428/multi.gif?ex=6638c73d&is=6626523d&hm=5ca0b23a3e41131d1d2a95352e57df746d014d4f36906a56d9032b2e13c8cc55&" alt="plus" /></div></div><div class="btns" style=""> <div class="character-btn" id="select" style="display: block;"><p id="select-text"><i "="">'+translations["select"]+'</i></p></div> </div> </div>'
+        htmlResult += '<div class="character" id="char-'+ i +'" data-cid=""><div class="character-div"><div class="user2"><img  src="https://i.imgur.com/5zKSl8E.gif" alt="plus" /></div><span id="slot-name">'+translations["create_new_character"]+'<span id="cid"></span></span><div class="user2"><img  src="https://i.imgur.com/5zKSl8E.gif" alt="plus" /></div></div><div class="btns" style=""> <div class="character-btn" id="select" style="display: block;"><p id="select-text"><i "="">'+translations["select"]+'</i></p></div> </div> </div>'
     }
 
     $('.characters-list').html(htmlResult)

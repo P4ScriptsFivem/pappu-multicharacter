@@ -8,9 +8,9 @@ local Translations = {
         characters_count = "characters",
       
          --Setup Characters
-       default_image = 'https://cdn.discordapp.com/attachments/1231930300628471878/1231938611759546428/multi.gif?ex=6638c73d&is=6626523d&hm=5ca0b23a3e41131d1d2a95352e57df746d014d4f36906a56d9032b2e13c8cc55&', --You can 'assets/yourimage.png' or any put "any link you want"
+       default_image = 'https://i.imgur.com/5zKSl8E.gif', --You can 'assets/yourimage.png' or any put "any link you want"
        create_new_character = "Create new character",
-       default_right_image = 'https://cdn.discordapp.com/attachments/1231930300628471878/1231942815823695942/action_key.png?ex=6627a7a7&is=66265627&hm=e14faf70483ecc96cf83f52d2b2adb2aa474b86f44f5f63566f67dcbb5719ef4&',
+       default_right_image = 'https://i.imgur.com/uulAqcy.png',
 
         --Create character
         create_header = "Identity Creation",
