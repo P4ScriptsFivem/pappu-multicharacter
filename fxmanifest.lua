@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'pappu'
 description 'pappu-multicharacter'
-version '1.0.0'
+version '1.0.1'
 
 shared_scripts {
     '@qb-core/shared/locale.lua',
