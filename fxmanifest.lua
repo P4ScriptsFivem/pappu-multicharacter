@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'pappu'
 description 'pappu-multicharacter'
-version '1.0.1'
+version '1.0.2'
 
 shared_scripts {
     '@qb-core/shared/locale.lua',
@@ -21,6 +21,8 @@ server_scripts  {
 ui_page 'html/index.html'
 
 files {
+    'html/image/*.png',
+    'html/image/*.gif',
     "html/js/*",
     'html/index.html',
     'html/css/*',

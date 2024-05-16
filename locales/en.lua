@@ -8,9 +8,9 @@ local Translations = {
         characters_count = "characters",
       
          --Setup Characters
-       default_image = 'https://i.imgur.com/5zKSl8E.gif', --You can 'assets/yourimage.png' or any put "any link you want"
+       default_image = 'image/action_dot.gif',
        create_new_character = "Create new character",
-       default_right_image = 'https://i.imgur.com/uulAqcy.png',
+       default_right_image = 'image/action_key.png',
 
         --Create character
         create_header = "Identity Creation",

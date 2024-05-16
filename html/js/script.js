@@ -170,7 +170,7 @@ async function getBase64Image(src, removeImageBackGround, callback, outputFormat
     $(".characters-text2").html(characters.length+'/ '+NChar+" "+ translations["characters_count"]);
     setCharactersList(characters.length)
     $.each(characters, function(index, char){
-          console.log(char.cid)
+        //   console.log(char.cid)
         $('#char-'+char.cid).html("");
         $('#char-'+char.cid).data("citizenid", char.citizenid);
         if(char.cid == 1){
@@ -379,7 +379,7 @@ function setCharactersList(max) {
     htmlResult += '<div class="characters">'
     if(max >= NChar) max = NChar-1
     for (let i = 1; i <= max+1; i++) {
-        htmlResult += '<div class="character" id="char-'+ i +'" data-cid=""><div class="character-div"><div class="user2"><img  src="https://i.imgur.com/5zKSl8E.gif" alt="plus" /></div><span id="slot-name">'+translations["create_new_character"]+'<span id="cid"></span></span><div class="user2"><img  src="https://i.imgur.com/5zKSl8E.gif" alt="plus" /></div></div><div class="btns" style=""> <div class="character-btn" id="select" style="display: block;"><p id="select-text"><i "="">'+translations["select"]+'</i></p></div> </div> </div>'
+        htmlResult += '<div class="character" id="char-'+ i +'" data-cid=""><div class="character-div"><div class="user2"><img  src="image/action_dot.gif" alt="plus" /></div><span id="slot-name">'+translations["create_new_character"]+'<span id="cid"></span></span><div class="user2"><img  src="image/action_dot.gif" alt="plus" /></div></div><div class="btns" style=""> <div class="character-btn" id="select" style="display: block;"><p id="select-text"><i "="">'+translations["select"]+'</i></p></div> </div> </div>'
     }
     htmlResult += '</div>'
     $('.characters-list').html(htmlResult)
@@ -388,7 +388,7 @@ function setCharactersList(max) {
 function refreshCharacters() {
     var htmlResult = ''
     for (let i = 1; i <= NChar; i++) {
-        htmlResult += '<div class="character" id="char-'+ i +'" data-cid=""><div class="character-div"><div class="user2"><img  src="https://i.imgur.com/5zKSl8E.gif" alt="plus" /></div><span id="slot-name">'+translations["create_new_character"]+'<span id="cid"></span></span><div class="user2"><img  src="https://i.imgur.com/5zKSl8E.gif" alt="plus" /></div></div><div class="btns" style=""> <div class="character-btn" id="select" style="display: block;"><p id="select-text"><i "="">'+translations["select"]+'</i></p></div> </div> </div>'
+        htmlResult += '<div class="character" id="char-'+ i +'" data-cid=""><div class="character-div"><div class="user2"><img  src="image/action_dot.gif" alt="plus" /></div><span id="slot-name">'+translations["create_new_character"]+'<span id="cid"></span></span><div class="user2"><img  src="image/action_dot.gif" alt="plus" /></div></div><div class="btns" style=""> <div class="character-btn" id="select" style="display: block;"><p id="select-text"><i "="">'+translations["select"]+'</i></p></div> </div> </div>'
     }
 
     $('.characters-list').html(htmlResult)
