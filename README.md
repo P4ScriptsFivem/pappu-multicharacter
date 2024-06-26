@@ -6,7 +6,7 @@ Multi Character Feature for QBCore Multicharacter And inspired by NoPixel 4.0.
 - Ability Delete Any Character.
 - Ability To See Character Information During Selection.
 - Ability To Customise Your Character Slot At [config.lua](https://github.com/P4ScriptsFivem/pappu-multicharacter/blob/main/config.lua).
-- **New**: Ability to log character creation, deletion, and selection to a Discord webhook.
+- **New**: Ability to log character creation, deletion, and selection to a Discord [webhook](https://github.com/P4ScriptsFivem/pappu-multicharacter/blob/main/server/main.lua#L61).
 ## Preview
 ![Group 5765](https://github.com/P4ScriptsFivem/pappu-multicharacter/assets/120780563/904aa0c6-cabf-4b9a-82ca-ac224e5cc24b)
 
