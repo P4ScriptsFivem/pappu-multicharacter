@@ -1,11 +1,11 @@
 local QBCore = exports['qb-core']:GetCoreObject()
+local hasDonePreloading = {}
 
 -- Functions
 
 local function GiveStarterItems(source)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    
     for _, v in pairs(QBCore.Shared.StarterItems) do
         local info = {}
         if v.item == "id_card" then
@@ -21,7 +21,7 @@ local function GiveStarterItems(source)
             info.birthdate = Player.PlayerData.charinfo.birthdate
             info.type = "Class C Driver License"
         end
-        exports['qb-inventory']:AddItem(src, v.item, v.amount, false, info, 'pappu-multicharacter:GiveStarterItems')
+        exports['pappu-inventorynp']:AddItem(src, v.item, v.amount, false, info, 'pappu-multicharacter:GiveStarterItems')
     end
 end
 
@@ -56,6 +56,38 @@ local function loadHouseData(src)
     TriggerClientEvent("qb-houses:client:setHouseConfig", src, Houses)
 end
 
+-- Discord logging function
+local function sendToDiscord(name, message, color)
+    local discordWebhook = "https://canary.discord.com/api/webhooks/1255278139291209831/rmq4wlFMeMTEHiU1fnQ08jWhHdrJ5e4wJ7ETkBOuzm1I82w2Qi_-u57NUIO1rjUNUY_D" -- Replace with your Discord webhook URL
+    
+    local embeds = {
+        {
+            ["title"] = name,
+            ["type"] = "rich",
+            ["color"] = color,
+            ["description"] = message,
+            ["footer"] = {
+                ["text"] = "Pappu MultiCharacter Logs",
+            },
+            ["timestamp"] = os.date("!%Y-%m-%dT%H:%M:%SZ") -- Adding timestamp in ISO 8601 format
+        }
+    }
+
+    PerformHttpRequest(discordWebhook, 
+        function(err, text, headers) 
+            if err == 200 then
+                print("Message sent successfully to Discord")
+            else
+                print("Error sending message to Discord: " .. err)
+            end
+        end, 
+        'POST', 
+        json.encode({ username = "Pappu MultiCharacter", embeds = embeds }), 
+        { ['Content-Type'] = 'application/json' }
+    )
+end
+
+
 -- Commands
 
 QBCore.Commands.Add("logout", "Logout of Character (Admin Only)", {}, false, function(source)
@@ -69,65 +101,68 @@ QBCore.Commands.Add("closeNUI", "Close Multi NUI", {}, false, function(source)
     TriggerClientEvent('pappu-multicharacter:client:closeNUI', src)
 end)
 
+
+
 -- Events
+
+AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
+    Wait(1000) -- 1 second should be enough to do the preloading in other resources
+    hasDonePreloading[Player.PlayerData.source] = true
+end)
+
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(src)
+    hasDonePreloading[src] = false
+end)
 
 RegisterNetEvent('pappu-multicharacter:server:disconnect', function()
     local src = source
-    DropPlayer(src, "You have disconnected from QBCore")
+    local Player = QBCore.Functions.GetPlayer(src)
+    if Player then
+        local citizenid = Player.PlayerData.citizenid
+        local firstname = Player.PlayerData.charinfo.firstname
+        local lastname = Player.PlayerData.charinfo.lastname
+        local fivemname = GetPlayerName(src)
+        sendToDiscord("Player Disconnected", string.format("Citizen ID: %s\nFirst Name: %s\nLast Name: %s\nFiveM Name: %s", citizenid, firstname, lastname, fivemname), 15158332)
+    end
+    DropPlayer(src, Lang:t("commands.droppedplayer"))
 end)
 
 RegisterNetEvent('pappu-multicharacter:server:loadUserData', function(cData)
     local src = source
     if QBCore.Player.Login(src, cData.citizenid) then
-        print('^2[qb-core]^7 '..GetPlayerName(src)..' (Citizen ID: '..cData.citizenid..') has succesfully loaded!')
+        repeat
+            Wait(10)
+        until hasDonePreloading[src]
+        local fivemname = GetPlayerName(src)
+        sendToDiscord("Player Loaded", string.format("Citizen ID: %s\nFiveM Name: %s", cData.citizenid, fivemname), 3066993)
         QBCore.Commands.Refresh(src)
         loadHouseData(src)
-        TriggerClientEvent('apartments:client:setupSpawnUI', src, cData)
-        TriggerEvent("qb-log:server:CreateLog", "joinleave", "Loaded", "green", "**".. GetPlayerName(src) .. "** ("..(QBCore.Functions.GetIdentifier(src, 'discord') or 'undefined') .." |  ||"  ..(QBCore.Functions.GetIdentifier(src, 'ip') or 'undefined') ..  "|| | " ..(QBCore.Functions.GetIdentifier(src, 'license') or 'undefined') .." | " ..cData.citizenid.." | "..src..") loaded..")
-	end
-end)
-
-RegisterNetEvent('pappu-multicharacter:server:createCharacter', function(data)
-    local src = source
-    local newData = {}
-    newData.cid = data.cid
-    newData.charinfo = data
-    if QBCore.Player.Login(src, false, newData) then
-        if Apartments.Starting then
-            local randbucket = (GetPlayerPed(src) .. math.random(1,999))
-            SetPlayerRoutingBucket(src, randbucket)
-            print('^2[qb-core]^7 '..GetPlayerName(src)..' has succesfully loaded!')
-            QBCore.Commands.Refresh(src)
-            loadHouseData(src)
-            TriggerClientEvent("pappu-multicharacter:client:closeNUI", src)
-            TriggerClientEvent('apartments:client:setupSpawnUI', src, newData)
-            GiveStarterItems(src)
+        if Config.SkipSelection then
+            local coords = json.decode(cData.position)
+            TriggerClientEvent('pappu-multicharacter:client:spawnLastLocation', src, coords, cData)
         else
-            print('^2[qb-core]^7 '..GetPlayerName(src)..' has succesfully loaded!')
-            QBCore.Commands.Refresh(src)
-            loadHouseData(src)
-            TriggerClientEvent("pappu-multicharacter:client:closeNUIdefault", src)
-            GiveStarterItems(src)
+            if GetResourceState('qb-apartments') == 'started' then
+                TriggerClientEvent('apartments:client:setupSpawnUI', src, cData)
+            else
+                TriggerClientEvent('qb-spawn:client:setupSpawns', src, cData, false, nil)
+                TriggerClientEvent('qb-spawn:client:openUI', src, true)
+            end
         end
-	end
+        TriggerEvent("qb-log:server:CreateLog", "joinleave", "Loaded", "green", "**".. GetPlayerName(src) .. "** (<@"..(QBCore.Functions.GetIdentifier(src, 'discord'):gsub("discord:", "") or "unknown").."> |  ||"  ..(QBCore.Functions.GetIdentifier(src, 'ip') or 'undefined') ..  "|| | " ..(QBCore.Functions.GetIdentifier(src, 'license') or 'undefined') .." | " ..cData.citizenid.." | "..src..") loaded..")
+    end
 end)
 
-RegisterNetEvent('pappu-multicharacter:server:deleteCharacter', function(citizenid)
-    local src = source
-    QBCore.Player.DeleteCharacter(src, citizenid)
-    TriggerClientEvent('QBCore:Notify', src, "Character deleted!" , "success")
-end)
-
-
+-- Ensure the resource name is correct
 Citizen.CreateThread(function()
     if (GetCurrentResourceName() ~= "pappu-multicharacter") then 
-        print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!");
+        print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!")
         print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!");
         print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!");
         print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!");
     end
 end)
 
+-- Print resource start message
 Citizen.CreateThread(function()
     local resourceName = "^2 P4ScriptsFivem Started ("..GetCurrentResourceName()..")"
     print("\n^1----------------------------------------------------------------------------------^7")
@@ -135,14 +170,70 @@ Citizen.CreateThread(function()
     print("^1----------------------------------------------------------------------------------^7")
 end)
 
+
+RegisterNetEvent('pappu-multicharacter:server:createCharacter', function(data)
+    local src = source
+    local newData = {}
+    newData.cid = data.cid
+    newData.charinfo = data
+    if QBCore.Player.Login(src, false, newData) then
+        repeat
+            Wait(10)
+        until hasDonePreloading[src]
+        local fivemname = GetPlayerName(src)
+        sendToDiscord("Character Created", string.format("Citizen ID: %s\nFirst Name: %s\nLast Name: %s\nFiveM Name: %s", newData.cid, data.firstname, data.lastname, fivemname), 3066993)
+        if GetResourceState('qb-apartments') == 'started' and Apartments.Starting then
+            local randbucket = (GetPlayerPed(src) .. math.random(1,999))
+            SetPlayerRoutingBucket(src, randbucket)
+            print('^2[qb-core]^7 '..GetPlayerName(src)..' has successfully loaded!')
+            QBCore.Commands.Refresh(src)
+            loadHouseData(src)
+            TriggerClientEvent("pappu-multicharacter:client:closeNUI", src)
+            TriggerClientEvent('apartments:client:setupSpawnUI', src, newData)
+            GiveStarterItems(src)
+        else
+            print('^2[qb-core]^7 '..GetPlayerName(src)..' has successfully loaded!')
+            QBCore.Commands.Refresh(src)
+            loadHouseData(src)
+            TriggerClientEvent("pappu-multicharacter:client:closeNUIdefault", src)
+            GiveStarterItems(src)
+        end
+    end
+end)
+
+RegisterNetEvent('pappu-multicharacter:server:deleteCharacter', function(citizenid)
+    local src = source
+    QBCore.Player.DeleteCharacter(src, citizenid)
+    local fivemname = GetPlayerName(src)
+    sendToDiscord("Character Deleted", string.format("Citizen ID: %s\nFiveM Name: %s", citizenid, fivemname), 15158332)
+    TriggerClientEvent('QBCore:Notify', src, "Character deleted!" , "success")
+end)
+
 -- Callbacks
 
 QBCore.Functions.CreateCallback("pappu-multicharacter:server:GetUserCharacters", function(source, cb)
     local src = source
     local license = QBCore.Functions.GetIdentifier(src, 'license')
-
+    local characters = {}
+    if not license then
+        cb(characters)
+        return
+    end
     MySQL.query('SELECT * FROM players WHERE license = ?', {license}, function(result)
-        cb(result)
+        if result[1] ~= nil then
+            for _, v in pairs(result) do
+                local charinfo = json.decode(v.charinfo)
+                local data = {
+                    citizenid = v.citizenid,
+                    charinfo = charinfo,
+                    cData = v
+                }
+                table.insert(characters, data)
+            end
+            cb(characters)
+        else
+            cb(characters)
+        end
     end)
 end)
 
@@ -194,4 +285,3 @@ QBCore.Functions.CreateCallback("pappu-multicharacter:server:getSkin", function(
         cb(nil)
     end
 end)
-

@@ -1,9 +1,9 @@
 fx_version 'cerulean'
 game 'gta5'
-
+lua54 'yes'
 author 'pappu'
-description 'pappu-multicharacter'
-version '1.0.3'
+description 'pappu-multicharacter Allows players to create characters'
+version '1.0.4'
 
 shared_scripts {
     '@qb-core/shared/locale.lua',
@@ -11,7 +11,12 @@ shared_scripts {
     'locales/*.lua',
     'config.lua'
 }
-client_script 'client/main.lua'
+
+client_scripts {
+    'client/main.lua'
+}
+
+
 server_scripts  {
     '@oxmysql/lib/MySQL.lua',
     '@qb-apartments/config.lua',
@@ -29,5 +34,6 @@ files {
 }
 
 dependencies {
-    'qb-core'
+    'qb-core',
+    'qb-spawn'
 }
