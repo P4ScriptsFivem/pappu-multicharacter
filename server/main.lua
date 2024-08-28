@@ -213,13 +213,13 @@ end)
 
 QBCore.Functions.CreateCallback("pappu-multicharacter:server:GetUserCharacters", function(source, cb)
     local src = source
-    local license = QBCore.Functions.GetIdentifier(src, 'license')
+    local license, license2 = GetPlayerIdentifierByType(src, 'license'), GetPlayerIdentifierByType(src, 'license2')
     local characters = {}
     if not license then
         cb(characters)
         return
     end
-    MySQL.query('SELECT * FROM players WHERE license = ?', {license}, function(result)
+    MySQL.query('SELECT * FROM players WHERE license = ? OR license = ?', {license2, license}, function(result)
         if result[1] ~= nil then
             for _, v in pairs(result) do
                 local charinfo = json.decode(v.charinfo)
@@ -245,12 +245,12 @@ end)
 
 QBCore.Functions.CreateCallback("pappu-multicharacter:server:GetNumberOfCharacters", function(source, cb)
     local src = source
-    local license = QBCore.Functions.GetIdentifier(src, 'license')
+    local license, license2 = GetPlayerIdentifierByType(src, 'license'), GetPlayerIdentifierByType(src, 'license2')
     local numOfChars = 0
 
     if next(Config.PlayersNumberOfCharacters) then
         for _, v in pairs(Config.PlayersNumberOfCharacters) do
-            if v.license == license then
+            if v.license == license or v.license == license2 then
                 numOfChars = v.numberOfChars
                 break
             else
@@ -264,9 +264,9 @@ QBCore.Functions.CreateCallback("pappu-multicharacter:server:GetNumberOfCharacte
 end)
 
 QBCore.Functions.CreateCallback("pappu-multicharacter:server:setupCharacters", function(source, cb)
-    local license = QBCore.Functions.GetIdentifier(source, 'license')
+    local license, license2 = GetPlayerIdentifierByType(src, 'license'), GetPlayerIdentifierByType(src, 'license2')
     local plyChars = {}
-    MySQL.query('SELECT * FROM players WHERE license = ?', {license}, function(result)
+    MySQL.query('SELECT * FROM players WHERE license = ? or license = ?', {license, license2}, function(result)
         for i = 1, (#result), 1 do
             result[i].charinfo = json.decode(result[i].charinfo)
             result[i].money = json.decode(result[i].money)
