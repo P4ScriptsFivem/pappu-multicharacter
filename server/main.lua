@@ -21,7 +21,7 @@ local function GiveStarterItems(source)
             info.birthdate = Player.PlayerData.charinfo.birthdate
             info.type = "Class C Driver License"
         end
-        exports['pappu-inventorynp']:AddItem(src, v.item, v.amount, false, info, 'pappu-multicharacter:GiveStarterItems')
+        exports[Config.inventoryexport]:AddItem(src, v.item, v.amount, false, info, 'pappu-multicharacter:GiveStarterItems')
     end
 end
 
@@ -180,8 +180,6 @@ RegisterNetEvent('pappu-multicharacter:server:createCharacter', function(data)
         repeat
             Wait(10)
         until hasDonePreloading[src]
-        local fivemname = GetPlayerName(src)
-        sendToDiscord("Character Created", string.format("Citizen ID: %s\nFirst Name: %s\nLast Name: %s\nFiveM Name: %s", newData.cid, data.firstname, data.lastname, fivemname), 3066993)
         if GetResourceState('qb-apartments') == 'started' and Apartments.Starting then
             local randbucket = (GetPlayerPed(src) .. math.random(1,999))
             SetPlayerRoutingBucket(src, randbucket)
@@ -197,12 +195,14 @@ RegisterNetEvent('pappu-multicharacter:server:createCharacter', function(data)
             loadHouseData(src)
             TriggerClientEvent("pappu-multicharacter:client:closeNUIdefault", src)
             GiveStarterItems(src)
+            TriggerEvent('apartments:client:SetHomeBlip', nil)
         end
     end
 end)
 
 RegisterNetEvent('pappu-multicharacter:server:deleteCharacter', function(citizenid)
     local src = source
+    if not Config.EnableDeleteButton then return end
     QBCore.Player.DeleteCharacter(src, citizenid)
     local fivemname = GetPlayerName(src)
     sendToDiscord("Character Deleted", string.format("Citizen ID: %s\nFiveM Name: %s", citizenid, fivemname), 15158332)
