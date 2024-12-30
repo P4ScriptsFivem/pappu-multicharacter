@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 author 'pappu'
 description 'pappu-multicharacter Allows players to create characters'
-version '1.0.5'
+version '1.0.6'
 
 shared_scripts {
     '@qb-core/shared/locale.lua',

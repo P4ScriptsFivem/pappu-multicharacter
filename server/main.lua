@@ -152,25 +152,6 @@ RegisterNetEvent('pappu-multicharacter:server:loadUserData', function(cData)
     end
 end)
 
--- Ensure the resource name is correct
-Citizen.CreateThread(function()
-    if (GetCurrentResourceName() ~= "pappu-multicharacter") then 
-        print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!")
-        print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!");
-        print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!");
-        print("[" .. GetCurrentResourceName() .. "] " .. "IMPORTANT: This resource must be named pappu-multicharacter for it to work properly!");
-    end
-end)
-
--- Print resource start message
-Citizen.CreateThread(function()
-    local resourceName = "^2 P4ScriptsFivem Started ("..GetCurrentResourceName()..")"
-    print("\n^1----------------------------------------------------------------------------------^7")
-    print(resourceName)
-    print("^1----------------------------------------------------------------------------------^7")
-end)
-
-
 RegisterNetEvent('pappu-multicharacter:server:createCharacter', function(data)
     local src = source
     local newData = {}
@@ -213,27 +194,10 @@ end)
 
 QBCore.Functions.CreateCallback("pappu-multicharacter:server:GetUserCharacters", function(source, cb)
     local src = source
-    local license, license2 = GetPlayerIdentifierByType(src, 'license'), GetPlayerIdentifierByType(src, 'license2')
-    local characters = {}
-    if not license then
-        cb(characters)
-        return
-    end
-    MySQL.query('SELECT * FROM players WHERE license = ? OR license = ?', {license2, license}, function(result)
-        if result[1] ~= nil then
-            for _, v in pairs(result) do
-                local charinfo = json.decode(v.charinfo)
-                local data = {
-                    citizenid = v.citizenid,
-                    charinfo = charinfo,
-                    cData = v
-                }
-                table.insert(characters, data)
-            end
-            cb(characters)
-        else
-            cb(characters)
-        end
+    local license = QBCore.Functions.GetIdentifier(src, 'license')
+
+    MySQL.query('SELECT * FROM players WHERE license = ?', {license}, function(result)
+        cb(result)
     end)
 end)
 
@@ -245,12 +209,12 @@ end)
 
 QBCore.Functions.CreateCallback("pappu-multicharacter:server:GetNumberOfCharacters", function(source, cb)
     local src = source
-    local license, license2 = GetPlayerIdentifierByType(src, 'license'), GetPlayerIdentifierByType(src, 'license2')
+    local license = QBCore.Functions.GetIdentifier(src, 'license')
     local numOfChars = 0
 
     if next(Config.PlayersNumberOfCharacters) then
         for _, v in pairs(Config.PlayersNumberOfCharacters) do
-            if v.license == license or v.license == license2 then
+            if v.license == license then
                 numOfChars = v.numberOfChars
                 break
             else
@@ -264,9 +228,9 @@ QBCore.Functions.CreateCallback("pappu-multicharacter:server:GetNumberOfCharacte
 end)
 
 QBCore.Functions.CreateCallback("pappu-multicharacter:server:setupCharacters", function(source, cb)
-    local license, license2 = GetPlayerIdentifierByType(src, 'license'), GetPlayerIdentifierByType(src, 'license2')
+    local license = QBCore.Functions.GetIdentifier(source, 'license')
     local plyChars = {}
-    MySQL.query('SELECT * FROM players WHERE license = ? or license = ?', {license, license2}, function(result)
+    MySQL.query('SELECT * FROM players WHERE license = ?', {license}, function(result)
         for i = 1, (#result), 1 do
             result[i].charinfo = json.decode(result[i].charinfo)
             result[i].money = json.decode(result[i].money)
@@ -285,3 +249,12 @@ QBCore.Functions.CreateCallback("pappu-multicharacter:server:getSkin", function(
         cb(nil)
     end
 end)
+
+QBCore.Commands.Add("deletechar", Lang:t("commands.deletechar_description"), {{name = Lang:t("commands.citizenid"), help = Lang:t("commands.citizenid_help")}}, false, function(source,args)
+    if args and args[1] then
+        QBCore.Player.ForceDeleteCharacter(tostring(args[1]))
+        TriggerClientEvent("QBCore:Notify", source, Lang:t("notifications.deleted_other_char", {citizenid = tostring(args[1])}))
+    else
+        TriggerClientEvent("QBCore:Notify", source, Lang:t("notifications.forgot_citizenid"), "error")
+    end
+end, "god")
